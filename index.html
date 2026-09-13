@@ -74,15 +74,15 @@
     textarea,
     select {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       border: 1px solid #d0d5dd;
-      border-radius: 10px;
-      font-size: 15px;
+      border-radius: 12px;
+      font-size: 16px;
       outline: none;
     }
 
     textarea {
-      min-height: 110px;
+      min-height: 120px;
       resize: vertical;
     }
 
@@ -94,15 +94,132 @@
 
     button {
       width: 100%;
-      margin-top: 20px;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
+      margin-top: 22px;
+      padding: 16px;
       background: #111827;
       color: white;
-      font-size: 16px;
+      border: 2px solid #f2b705;
+      border-radius: 12px;
+      font-size: 17px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    button:disabled
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      color: #667085;
+    }
+
+    .result {
+      display: none;
+      margin-top: 25px;
+      padding: 20px;
+      background: #f8fafc;
+      border: 1px solid #d0d5dd;
+      border-radius: 14px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .result h3 {
+      margin-bottom: 12px;
+    }
+
+    .error {
+      color: #b42318;
+      background: #fef3f2;
+      border-color: #fecdca;
+    }
+
+    footer {
+      text-align: center;
+      margin: 30px 0;
+      color: #667085;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🚀 VendreIA</h1>
+    <p>Vendez mieux avec l'intelligence artificielle</p>
+  </header>
+
+  <div class="container">
+
+    <div class="hero">
+      <h2>✨ Créez votre contenu de vente</h2>
+      <p>
+        Générez rapidement des publicités, messages WhatsApp,
+        scripts TikTok et descriptions de produits grâce à l'IA.
+      </p>
+    </div>
+
+    <div class="card">
+
+      <label for="product">Nom du produit</label>
+      <input
+        type="text"
+        id="product"
+        placeholder="Ex : Chaussures hommes"
+      >
+
+      <label for="price">Prix</label>
+      <input
+        type="text"
+        id="price"
+        placeholder="Ex : 15 000 FCFA"
+      >
+
+      <label for="description">Décrivez votre produit</label>
+      <textarea
+        id="description"
+        placeholder="Ex : Chaussures modernes, confortables, disponibles en plusieurs tailles et couleurs..."
+      ></textarea>
+
+      <label for="type">Type de contenu</label>
+      <select id="type">
+        <option value="Publicité Facebook">Publicité Facebook</option>
+        <option value="Message WhatsApp">Message WhatsApp</option>
+        <option value="Script TikTok">Script TikTok</option>
+        <option value="Description produit">Description produit</option>
+        <option value="Réponse client">Réponse client</option>
+      </select>
+
+      <button id="generateButton" onclick="generer()">
+        ✨ Générer avec l'IA
+      </button>
+
+      <div class="loading" id="loading">
+        ⏳ L'IA prépare votre contenu...
+      </div>
+
+      <div class="result" id="result">
+        <h3>🎯 Votre contenu</h3>
+        <div id="resultText"></div>
+      </div>
+
+    </div>
+
+    <footer>
+      © 2026 VendreIA — Votre assistant commercial IA
+    </footer>
+
+  </div>
+
+  <script>
+
+    async function generer() {
+
+      const product = document.getElementById("product").value.trim();
+      const price = document.getElementById("price").value.trim();
+      const description = document.getElementById("description").value.trim

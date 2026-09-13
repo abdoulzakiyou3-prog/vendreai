@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>VendreIA - Connexion</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #172033;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo h1 {
+      font-size: 32px;
+      color: #111827;
+    }
+
+    .logo p {
+      margin-top: 8px;
+      color: #667085;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .tab {
+      width: 50%;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: #667085;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .tab.active {
+      color: #111827;
+      border-bottom: 3px solid #f2b705;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d0d5dd;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #111827;
+    }
+
+    .main-button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      background: #111827;
+      color: white;
+      border: 2px solid #f2b705;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .main-button:disabled {
+      opacity: 0.6;
+    }
+
+    .message {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .success {
+      display: block;
+      background: #ecfdf3;
+      color: #027a48;
+    }
+
+    .error {
+      display: block;
+      background: #fef3f2;
+      color: #b42318;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back a {
+      color: #111827;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">
+      <h1>🚀 VendreIA</h1>
+      <p>Votre assistant commercial IA</p>
+    </div>
+
+    <div class="card">
+
+      <div class="tabs">
+
+        <button
+          class="tab active"
+          id="loginTab"
+          onclick="showLogin()">
+          Connexion
+        </button>
+
+        <button
+          class="tab"
+          id="signupTab"
+          onclick="showSignup()">
+          Inscription
+        </button>
+
+      </div>
+
+      <!-- CONNEXION -->
+
+      <div id="loginForm">
+
+        <label for="loginEmail">
+          Adresse email
+        </label>
+
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="exemple@email.com">
+
+        <label for="loginPassword">
+          Mot de passe
+        </label>
+
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Votre mot de passe">
+
+        <button
+          class="main-button"
+          id="loginButton"
+          onclick="login()">
+          🔐 Se connecter
+        </button>
+
+      </div>
+
+
+      <!-- INSCRIPTION -->
+
+      <div
+        id="signupForm"
+        style="display:none;">
+
+        <label for="signupEmail">
+          Adresse email
+        </label>
+
+        <input
+          type="email"
+          id="signupEmail"
+          placeholder="exemple@email.com">
+
+        <label for="signupPassword">
+          Mot de passe
+        </label>
+
+        <input
+          type="password"
+          id="signupPassword"
+          placeholder="Minimum 6 caractères">
+
+        <button
+          class="main-button"
+          id="signupButton"
+          onclick="signup()">
+          🚀 Créer mon compte
+        </button>
+
+      </div>
+
+
+      <div
+        id="message"
+        class="message">
+      </div>
+
+
+      <div class="back">
+        <a href="index.html">
+          ← Retour à VendreIA
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /*
+    =====================================================
+    CONFIGURATION SUPABASE
+    =====================================================
+    */
+
+    const SUPABASE_URL =
+      "https://yjoqjdgbcvvnfwxzaav.supabase.co";
+
+    /*
+    IMPORTANT :
+    Remplace uniquement la valeur ci-dessous
+    par ta Publishable key Supabase.
+    */
+
+    const SUPABASE_PUBLISHABLE_KEY =
+    sb_publishable_6-QuhD5turzGDV-I-JwGFQ_pLCbadHx
+
+
+    const { createClient } = supabase;
+
+    const supabaseClient = createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+    /*
+    =====================================================
+    MESSAGE
+    =====================================================
+    */
+
+    function showMessage(text, type) {
+
+      const message =
+        document.getElementById("message");
+
+      message.textContent = text;
+
+      message.className =
+        "message " + type;
+    }
+
+
+    /*
+    =====================================================
+    AFFICHER CONNEXION
+    =====================================================
+    */
+
+    function showLogin() {
+
+      document.getElementById("loginForm")
+        .style.display = "block";
+
+      document.getElementById("signupForm")
+        .style.display = "none";
+
+      document.getElementById("loginTab")
+        .classList.add("active");
+
+      document.getElementById("signupTab")
+        .classList.remove("active");
+
+      document.getElementById("message")
+        .className = "message";
+    }
+
+
+    /*
+    =====================================================
+    AFFICHER INSCRIPTION
+    =====================================================
+    */
+
+    function showSignup() {
+
+      document.getElementById("loginForm")
+        .style.display = "none";
+
+      document.getElementById("signupForm")
+        .style.display = "block";
+
+      document.getElementById("loginTab")
+        .classList.remove("active");
+
+      document.getElementById("signupTab")
+        .classList.add("active");
+
+      document.getElementById("message")
+        .className = "message";
+    }
+
+
+    /*
+    =====================================================
+    INSCRIPTION
+    =====================================================
+    */
+
+    async function signup() {
+
+      const email =
+        document.getElementById("signupEmail")
+          .value.trim();
+
+      const password =
+        document.getElementById("signupPassword")
+          .value;
+
+      const button =
+        document.getElementById("signupButton");
+
+
+      if (!email || !password) {
+
+        showMessage(
+          "Veuillez remplir tous les champs.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      if (password.length < 6) {
+
+        showMessage(
+          "Le mot de passe doit contenir au moins 6 caractères.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "⏳ Création du compte...";
+
+
+      try {
+
+        const { data, error } =
+          await supabaseClient.auth.signUp({
+
+            email: email,
+
+            password: password,
+
+            options: {
+              emailRedirectTo:
+                window.location.origin + "/login.html"
+            }
+
+          });
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        showMessage(
+          "✅ Compte créé ! Vérifiez votre adresse email pour confirmer votre compte.",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        showMessage(
+          "❌ " + error.message,
+          "error"
+        );
+
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          "🚀 Créer mon compte";
+
+      }
+
+    }
+
+
+    /*
+    =====================================================
+    CONNEXION
+    =====================================================
+    */
+
+    async function login() {
+
+      const email =
+        document.getElementById("loginEmail")
+          .value.trim();
+
+      const password =
+        document.getElementById("loginPassword")
+          .value;
+
+      const button =
+        document.getElementById("loginButton");
+
+
+      if (!email || !password) {
+
+        showMessage(
+          "Veuillez remplir tous les champs.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "⏳ Connexion...";
+
+
+      try {
+
+        const { data, error } =
+          await supabaseClient.auth
+            .signInWithPassword({
+
+              email: email,
+
+              password: password
+
+            });
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        showMessage(
+          "✅ Connexion réussie !",
+          "success"
+        );
+
+
+        setTimeout(() => {
+
+          window.location.href =
+            "dashboard.html";
+
+        }, 1000);
+
+
+      } catch (error) {
+
+        showMessage(
+          "❌ " + error.message,
+          "error"
+        );
+
+
+      } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+          "🔐 Se connecter";
+
+      }
+
+    }
+
+  </script>
+
+</body>
+  </html>
